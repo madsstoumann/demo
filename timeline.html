@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Play/Pause Animations: Timeline</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+    body {
+      font-family: ui-sans-serif, sysetm-ui, sans-serif;
+      padding: 1rem 2rem;
+    }
+    .chk {
+      align-items: center;
+      cursor: pointer;
+      display: inline-flex;
+      user-select: none;
+    }
+    .chk::before {
+      --ico-check: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M14 2.5l-8.5 8.5-3.5-3.5-1.5 1.5 5 5 10-10z" fill="white"></path></svg>');
+      background: silver var(--ico-check) center center/70% no-repeat;
+      border-radius: 0.25rem;
+      display: inline-block;
+      content: '';
+      height: 1.25rem;
+      margin-inline-end: 0.25rem;
+      width: 1.25rem;
+    }
+    .hidden {
+      clip: rect(1px 1px 1px 1px);
+      clip: rect(1px, 1px, 1px, 1px);
+      clip-path: inset(1px);
+      display: block;
+      height: 1px;
+      overflow: hidden; 
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
+    }
+    .circle {
+      --bgc: cornflowerblue;
+      --w: 150px;
+      align-items: center;
+      background-color: var(--bgc);
+      border-radius: 50%;
+      color: #FFF;
+      display: flex;
+      height: var(--w);
+      justify-content: center;
+      margin-bottom: 1rem;
+      width: var(--w);
+    }
+    .a-slide {
+      --animdel: 0s;
+      --animdur: 10s;
+      --animn: slide;
+    }
+    [data-animation] {
+      animation: var(--animn, none) var(--animdur, 0s) var(--animtf, linear) var(--animdel, 0s) var(--animic, infinite) var(--animdir, alternate) var(--animfm, none) var(--animps, running);
+    }
+    [type="range"] {
+      margin: 1rem 0; 
+      width: 100%;
+    }
+
+     /* STATE */
+    [data-animation-pause]:checked ~ [data-animation] {
+      --animps: paused;
+    }
+
+    [data-animation-pause]:checked + label::before {
+      background-color: cornflowerblue;
+    }
+
+    /* KEYFRAMES */
+    @keyframes slide {
+      0% { margin-left: 0%; }
+      25% { --bgc: tomato; }
+      50% { --bgc: tan; }
+      75% { --bgc: orange; }
+      100% { --bgc: purple; margin-left: calc(100% - var(--w, 150px)); }
+  }
+  </style>
+</head>
+<body>
+  <h1>Scroll @keyframe Timeline</h1>
+  <p>Drag the slider to where you want the animation to begin, and click ”Toggle play/pause”.</p>
+  <input type="checkbox" data-animation-pause id="css-toggle" class="hidden" checked />
+  <label for="css-toggle" class="chk">Toggle play/pause</label>
+  <label>
+    <input type="range" min="0" max="10" value="0" oninput="ani.style.setProperty('--animdel', `${0 - this.value}s`)" />
+  </label>
+  <div class="circle a-slide" id="ani" data-animation>I will slide</div>
+</body>
+</html>

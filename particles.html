@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Particles</title>
+	<style>
+		body { margin: unset; }
+		circle[data-static] {
+			stroke: hsl(0, 50%, 30%);
+			stroke-width: 2;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<svg id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1000 500"></svg>
+
+	<script>
+
+		function checkDistance(x1, y1, x2, y2){ 
+			return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+		}
+
+		function coords(amount, w, h) {
+			return new Array(amount).fill().map(() => {
+				let x = Math.random() - 0.5;
+				let y = Math.random() - 0.5;
+				x = (x * 0.96875 + 0.5) * w;
+				y = (y * 0.96875 + 0.5) * h;
+				return [x, y]
+			})
+		}
+
+		function drawCanvasParticles(canvas, settings) {
+			const ctx = canvas.getContext("2d");
+			ctx.lineWidth = settings.strokeWidth;
+
+			const circle = (x, y, radius, fill) => {
+				ctx.beginPath();
+				ctx.arc(x, y, radius, 0, Math.PI*2);
+				ctx.closePath();
+				ctx.fillStyle = `hsl(${fill}`;
+				ctx.fill();
+			}
+
+			const line = (x, y, x1, y1, alpha, stroke = settings.stroke) => {
+				ctx.strokeStyle = `hsla(${stroke}, ${alpha})`;
+				ctx.beginPath();
+				ctx.moveTo(x, y);
+				ctx.lineTo(x1, y1);
+				ctx.closePath();
+				ctx.stroke();
+			}
+
+			if (settings.fitWidth) {
+				const aspect = settings.width / settings.height;
+				settings.height = window.innerWidth / aspect;
+				settings.width = window.innerWidth;
+			}
+
+			canvas.height = settings.height;
+			canvas.width = settings.width;
+
+			let points = coords(settings.particles, settings.width, settings.height);
+			const length = points.length;
+			points = points.concat(settings.static);
+			points = points.map((point, index) => {
+				const [x, y] = [...point];
+				const static = index >= length;
+				const angle = Math.floor(Math.random() * 360);
+				const radius = static ? settings.staticRad : random(settings.minRad, settings.maxRad);
+				const speed = random(settings.minSpeed, settings.maxSpeed) / 10;
+				const tx = Math.cos(angle) * speed;
+				const ty = Math.sin(angle) * speed;
+				return { x, y, tx, ty, radius, angle, speed, static }
+			});
+
+			const render = () => {
+				ctx.clearRect(0, 0, settings.width, settings.height);
+				points.forEach(point => {
+					if (!point.static) update(point);
+					points.forEach(link => {
+						const distance = checkDistance(point.x, point.y, link.x, link.y);
+						const alpha = 1 - distance / settings.distance;
+						if (alpha > 0) {
+							line(point.x, point.y, link.x, link.y, alpha);
+						}
+					});
+				});
+				points.forEach(point => {
+					circle(point.x, point.y, point.radius, (point.static ? settings.staticFill : settings.fill));
+				})
+				requestAnimationFrame(render);
+			}
+
+			update = (point) => { 
+				if (point.x >= settings.width || point.x <= 0) point.tx *= -1;
+				if (point.y >= settings.height || point.y <= 0) point.ty *= -1;
+				if (point.x > settings.width) point.x = settings.width;
+				if (point.y > settings.height) point.y = settings.height;
+				if (point.x < 0) point.x = 0;
+				if (point.y < 0) point.y = 0;	
+				point.x += point.tx; 
+				point.y += point.ty; 
+			}
+
+			render();
+		}
+
+		function drawSVGParticles(svg, settings) {
+			let c = '', l = '';
+			let points = coords(settings.particles, settings.width, settings.height);
+			const length = points.length;
+			points = points.concat(settings.static);
+			points.forEach((coord, index) => {
+				const [x, y] = [...coord];
+				const static = index >= length;
+				l+= points.map(arr => {
+					const [x1, y1] = [...arr];
+					const distance = checkDistance(x, y, x1, y1);
+					const alpha = 1 - distance / settings.distance;
+					if (alpha > 0) return `<line x1="${x1}" y1="${y1}" x2="${x}" y2="${y}" ${static ? `data-static`:''} stroke="hsla(${settings.fill}, ${alpha})" stroke-width="${settings.strokeWidth}" />`}).join('');
+				c+= `<circle cx="${x}" cy="${y}" ${static ? `data-static`:''} r="${static ? settings.staticRad : random(settings.minRad, settings.maxRad)}" fill="${static ? `hsl(${settings.staticFill})` : `hsl(${settings.fill})`}" />`;
+			});
+			svg.innerHTML = l + c;
+		}
+
+		function random(min, max) {
+			return Math.floor(Math.random() * (max - min) + min);
+		}
+
+		const settings = {
+			distance: 250,
+			fill: '0, 0%, 75%',
+			fitWidth: true,
+			height: 500,
+			maxRad: 6,
+			minRad: 2,
+			particles: 35,
+			maxSpeed: 6,
+			minSpeed: 1,
+			static: [
+				[100, 100],
+				[500, 200],
+				[700, 150]
+			],
+			staticFill: '0, 50%, 50%',
+			staticRad: 10,
+			stroke: '0, 0%, 75%',
+			strokeWidth: 0.5,
+			width: 1000
+		}
+
+		drawCanvasParticles(canvas, settings)
+		drawSVGParticles(svg, settings);
+
+		// window.addEventListener('resize', () => {
+		// 	if (window.innerWidth > 800) settings.particles = 50;
+		// 	drawCanvasParticles(canvas, settings) }
+		// );
+	</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>HTML Quiz</title>
+	<style>
+body {
+	background-color: tomato;
+	margin: unset;
+	min-height: 100vh;
+}
+main {
+	--dark: hsl(200, 10%, 15%);
+	--light: hsl(200, 10%, 99%);
+	--gap: 0.5em;
+	background-color: var(--light);
+	color: var(--dark);
+	counter-reset: progress score;
+	font-family: ui-sans-serif, system-ui, sans-serif;
+	font-size: 1rem;
+	min-height: 100vh;
+}
+button,
+legend,
+label[for="colormode"] {
+	align-self: flex-end;
+	background-color: var(--dark);
+	border: 0;
+	color: var(--light);
+	font-size: inherit;
+	padding: var(--gap) calc(var(--gap) * 2);
+	user-select: none;
+}
+div {
+	display: none;
+}
+fieldset {
+	border: 1px solid var(--dark);
+	margin-block-end: var(--gap);
+	padding: var(--gap) calc(var(--gap) * 2);
+}
+form {
+	display: none;
+	flex-direction: column;
+	padding-block-end: var(--gap);
+}
+h1 {
+	margin: unset;
+	padding: var(--gap) 0;
+}
+input[type="radio"] {
+	accent-color: var(--dark);
+	margin-inline-end: var(--gap);
+}
+label {
+	align-items: center;
+	display: flex;
+	margin: var(--gap) 0;
+}
+label[for="colormode"] {
+	font-size: x-small;
+	margin: 0;
+	position: absolute;
+	inset-block-end: 0;
+}
+section {
+	margin: 0 auto;
+	max-width: 400px;
+	padding: 0 var(--gap);
+}
+
+/* STATE */
+div:target {
+	display: block;
+}
+form:target {
+	display: flex;
+}
+form:target ~ a {
+	display: none;
+}
+#colormode:checked + main {
+	--light: hsl(200, 10%, 15%);
+	--dark: hsl(200, 10%, 99%);
+}
+
+@media (min-width: 600px) {
+	label[for="colormode"] {
+		inset-block-end: auto;
+		inset-inline-end: 0;
+	}
+}
+
+
+input[type="radio"]:checked {
+  counter-increment: progress;
+}
+
+	</style>
+</head>
+<body>
+<input type="checkbox" id="colormode" hidden />
+
+<main>
+	<label for="colormode">Dark/Light</label>
+	<section>
+	<h1>HTML Quiz – in HTML!</h1>
+
+	<form id="step1" action="#step2">
+		<fieldset>
+			<legend>Which tag is HTML's disclosure widget?</legend>
+			<label>
+				<input type="radio" name="q1" value="dialog" required>
+				<code>&lt;dialog&gt;</code>
+			</label>
+			<label>
+				<input type="radio" name="q1" value="details" data-score="10">
+				<code>&lt;details&gt;</code>
+			</label>
+			<label>
+				<input type="radio" name="q1" value="select">
+				<code>&lt;select&gt;</code>
+			</label>
+		</fieldset>
+		<button type="submit">Next</button>
+	</form>
+
+	<form id="step2" action="#step3">
+		<fieldset>
+			<legend>Which tag can be used as a modal?</legend>
+			<label>
+				<input type="radio" name="q2" value="dialog" data-score="10" required>
+				<code>&lt;dialog&gt;</code>
+			</label>
+			<label>
+				<input type="radio" name="q2" value="details">
+				<code>&lt;details&gt;</code>
+			</label>
+			<label>
+				<input type="radio" name="q2" value="select">
+				<code>&lt;select&gt;</code>
+			</label>
+		</fieldset>
+		<button type="submit">Next</button>
+	</form>
+
+	<form id="step3" action="#result">
+		<fieldset>
+			<legend>Which tag is a dropdown widget?</legend>
+			<label>
+				<input type="radio" name="q3" value="dialog" required>
+				<code>&lt;dialog&gt;</code>
+			</label>
+			<label>
+				<input type="radio" name="q3" value="details">
+				<code>&lt;details&gt;</code>
+			</label>
+			<label>
+				<input type="radio" name="q3" value="select" data-score="10">
+				<code>&lt;select&gt;</code>
+			</label>
+		</fieldset>
+		<button type="submit">See your score</button>
+	</form>
+
+	<div id="result">
+		<h2>Your score is ...</h2>
+		<hr />
+	</div>
+
+	<a href="#step1">Start Quiz</a>
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Count</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+    .c-cnt {
+      display: flex;
+      flex-wrap: wrap;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      margin-block-end: 1rem;
+    }
+    .c-cnt button,
+    .c-cnt input {
+      border: 0;
+      font-family: inherit;
+      font-size: 1.25rem;
+      font-weight: 300;
+    }
+    .c-cnt button {
+      border-radius: 50%;
+      height: 3rem;
+      padding: 0;
+      width: 3rem;
+    }
+    .c-cnt button:focus,
+    .c-cnt button:focus-visible {
+      outline: none;
+    }
+    .c-cnt button:focus-visible {
+      box-shadow: 0 0 0 2px darkgrey;
+    }
+    .c-cnt div {
+      color: grey;
+      flex: 0 0 100%;
+      font-size: small;
+      height: 1rem;
+      padding: 0.5rem 0 0;
+    }
+    .c-cnt input {
+      background: transparent;
+      text-align: center;
+      width: 2rem;
+    }
+    .c-cnt input[type=number]::-webkit-inner-spin-button, 
+    .c-cnt input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+  </style>
+</head>
+<body>
+
+<label class="c-cnt" aria-label="Counter 1">
+  <input type="number" min="0" max="10" step="1" value="0" disabled data-count data-dec="decrement" data-inc="increment" />
+</label>
+
+<label class="c-cnt" aria-label="Counter 2">
+  <input type="number" min="1" max="100" step="1" value="0" readonly data-count data-dec="decrement" data-inc="increment" />
+</label>
+
+<script>
+const arr = 
+[
+  { a: 1, b: 1, msg: 'One is the loneliest number that you\'ll ever do' },
+  { a: 2, b: 2, msg: 'Two can be as bad as one, it\'s the loneliest number since the number one' },
+  { a: 3, b: 3, msg: 'Three is a magic number' },
+  { a: 4, b: 4, msg: 'Yes it is, it\'s a magic number' },
+  { a: 5, b: 5, msg: 'Somewhere in that ancient mystic trinity' },
+  { a: 6, b: 6, msg: 'You get three as a magic number' },
+  { a: 7, b: 7, msg: 'The past and the present and the future' },
+  { a: 8, b: 8, msg: 'Faith and hope and charity' },
+  { a: 9, b: 9, msg: 'The heart and the brain and the body' },
+  { a: 10, b: 10, msg: 'Give you three as a magic number' }
+];
+
+function add(lbl, aria) {
+  const b = document.createElement('button');
+  return b.type='button', b.innerText = lbl, b['ariaLabel'] = aria, b
+}
+
+function msg(N, T) {
+  const V = N.valueAsNumber;
+  T.innerText = arr.filter(o => o.a <= V && V <= o.b).map(o => o.msg).join('');;
+}
+
+const count = document.querySelectorAll('[data-count');
+count.forEach(cnt => {
+  const txt = document.createElement('div');
+  const dec = add('−', cnt.dataset.dec); dec.addEventListener('click', () => { cnt.stepDown(); msg(cnt, txt)});
+  const inc = add('+', cnt.dataset.inc); inc.addEventListener('click', () => { cnt.stepUp(); msg(cnt, txt)});
+  cnt.parentNode.insertBefore(inc, cnt.nextSibling);
+  cnt.parentNode.insertBefore(dec, cnt);
+  inc.parentNode.insertBefore(txt, inc.nextSibling);
+});
+</script>
+
+</body>
+</html>

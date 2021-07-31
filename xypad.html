@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>MicroColor</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+  
+  body { padding: 5rem; }
+
+[data-xy] {
+  --bgc: #333;
+  --size: 25rem;	
+  --xybdc: rgba(136, 136, 136, .5);
+  --xybdw: 8px;
+  --xybgc: rgb(245, 230, 99);
+  --xysize: 4rem;
+  background-color:var(--bgc);
+  block-size: var(--size);
+  border: 0;
+  inline-size: var(--size);
+  overflow: hidden;
+  padding: 0;
+  touch-action: none;
+}
+[data-xy] [name="xy"] {
+  background-color: var(--xybgc);
+  block-size: var(--xysize);
+  border: var(--xybdw) solid var(--xybdc);
+  border-radius: var(--xybdrs, 50%);
+  inline-size: var(--xysize);
+  touch-action: none;
+  user-select: none;
+}
+[name="xy"]:active {
+  background-color: rgba(168, 218, 220, 1.00);
+}
+[data-xy] [name="x"],
+[data-xy] [name="y"]  {
+  clip: rect(0 0 0 0); 
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap; 
+  width: 1px;
+}
+
+  </style>
+</head>
+<body>
+
+  <fieldset data-xy>
+    <button type="button" name="xy"></button>
+    <input type="range" min="0" max="100" name="x" value="100">
+    <input type="range" min="0" max="100" name="y" value="100">
+  </fieldset>
+  
+
+  <script>
+
+  function xyPad(pad, shift = 10) {
+    let active = false;
+    let btn =  pad.elements['xy'];
+    // const edge = btn.offsetWidth / 2;
+    const edge = 0;
+    const rect = pad.getBoundingClientRect();
+ 
+    let xCurrent = 0;
+    let yCurrent = 0;
+    let xInitial;
+    let yInitial;
+    const xMax = rect.width - btn.offsetWidth;
+    const yMax = rect.height - btn.offsetHeight;
+    let xOffset = 0;
+    let yOffset = 0;
+
+    pad.addEventListener('keydown', key);
+    pad.addEventListener("pointerdown", down, false);
+    pad.addEventListener("pointerup", up, false);
+    pad.addEventListener("pointermove", move, false);
+
+    function down(e) {
+      xInitial = e.clientX - xOffset;
+      yInitial = e.clientY - yOffset;
+      if (e.target === btn) active = true;
+    }
+
+    function up(e) {
+      xInitial = xCurrent;
+      yInitial = yCurrent;
+      active = false;
+    }
+
+    function move(e) {
+      if (active) {
+        e.preventDefault();
+        xCurrent = e.clientX - xInitial;
+        yCurrent = e.clientY - yInitial;
+        update(xCurrent, yCurrent);
+      }
+    }
+
+    function key(e) {
+      if (e.target === btn) {
+        console.log('her')
+        // if (event.key !== 'Tab') event.preventDefault();
+        switch(event.key) {
+          case 'ArrowDown': e.shiftKey ? yCurrent = yCurrent + shift : yCurrent++; break;
+          case 'ArrowLeft': e.shiftKey ? xCurrent = xCurrent - shift : xCurrent--; break;
+          case 'ArrowRight': e.shiftKey ? xCurrent = xCurrent + shift : xCurrent++; break;
+          case 'ArrowUp': e.shiftKey ? yCurrent = yCurrent - shift : yCurrent--; break;
+          default: break;
+        }
+         // CHECK MAXX + MAXY, set xCurrent and yCurrent if greater or lesser
+        update(xCurrent, yCurrent);
+      }
+    }
+
+    function update(x, y) {
+      xOffset = x;
+      yOffset = y;
+      const xMove = x >= 0-edge && x <= xMax;
+      const yMove = y >= 0-edge && y <= yMax;
+      // if (xMove && yMove) {
+        btn.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      // }
+    
+      // console.log(xOffset,yOffset,xCurrent,yCurrent,xInitial,yInitial)
+    }
+  }
+
+
+    const elm = document.querySelector('[data-xy]');
+    xyPad(elm);
+  </script>
+</body>
+</html>	

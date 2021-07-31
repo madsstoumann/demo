@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Canvas</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+    /* canvas {
+      background: conic-gradient(
+        hsl(0, 100%, 50%), 
+        hsl(30, 100%, 50%), 
+        hsl(60, 100%, 50%), 
+        hsl(90, 100%, 50%), 
+        hsl(120, 100%, 50%), 
+        hsl(150, 100%, 50%), 
+        hsl(180, 100%, 50%), 
+        hsl(210, 100%, 50%), 
+        hsl(240, 100%, 50%), 
+        hsl(270, 100%, 50%), 
+        hsl(300, 100%, 50%), 
+        hsl(330, 100%, 50%),
+        hsl(360, 100%, 50%)
+      );
+      
+    } */
+    /* canvas { 
+      height: 100%;
+      width: 100%;
+    } */
+
+    canvas {
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	/* animation: gradient 15s ease infinite; */
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+  </style>
+</head>
+<body> 
+  <canvas id="c" height="600" width="600"></canvas>
+
+<script>
+
+let counter = 0;
+const size = 600;
+
+function draw() {
+  if (counter <= 100) {
+    counter++;
+  }
+  else {
+    counter = 0;
+  }
+  
+  console.log(counter);
+
+
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, size, size); // clear canvas
+  for (let x = 0; x < size/4; x++) {
+    for (let y = 0; y < size/4; y++) {
+      if ((x ^ y) % counter) { /* 5, 17, 33 */
+        
+        // ctx.fillStyle = `hsl(${Math.floor(Math.random() * 15)}, 100%, 50%)`;
+        ctx.fillRect(x*4, y*4, 4, 4)
+        // ctx.beginPath();
+        // ctx.arc(x*4, y*4, 2, 0, 2 * Math.PI, false);
+        // ctx.fill();
+      }
+    }
+  }
+  // if (counter < 50) {
+    requestAnimationFrame(draw);
+  // }
+}
+
+// requestAnimationFrame(draw);
+
+
+
+function draw(w, h, m = 3, size = 4, ox = 0, oy = 0, fs = '#000', clear = false) {
+  const ctx = c.getContext('2d');
+  if (clear) ctx.clearRect(0, 0, w, h);
+  for (let x = 0; x < w/size; x++) {
+    for (let y = 0; y < h/size; y++) {
+      if (
+        
+        // (x ^ y) % m
+        // (x * y) & 24
+        // (x | y) % 9
+        // (x ^ y) < 55
+        // (x * 64) % y
+        // ((x-128) * 64) % (y-128)
+        // (x ^ y) & 72
+        // ((x * y) ** 5) % 7
+        // (x % y) % 7
+        // x & y
+        // x % y
+        // x & 12
+        (x * 64) % y * ((x ^ y) < 77)
+        ) {
+        ctx.fillStyle = fs;
+        // `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
+        ctx.fillRect(x * size + ox, y * size + oy, size, size)
+        // ctx.beginPath();
+        // ctx.arc(x*size, y*size, size/2, 0, 2 * Math.PI, false);
+        // ctx.fill();
+      }
+    }
+  }
+}
+
+draw(600, 600, 39, 4);
+// art(100, 100, 2);
+// art(200, 100, 3, 100, 0);
+// art(100, 100, 4, 300, 0);
+// art(200, 100, 5, 400, 0);
+// art(100, 300, 13, 0, 100);
+// art(200, 100, 14, 100, 100);
+// art(200, 100, 15, 300, 100, 'tomato');
+// art(100, 100, 16, 500, 100, 'orangered');
+
+  </script>
+
+  <!--
+
+Circular
+(x * y) & 64
+(x * y) & 24
+(x * y) & 47 https://twitter.com/aemkei/status/1378453945316737035?s=27
+
+Triangles
+(x | y) % 7
+(x | y) % 17
+(x | y) % 29 https://twitter.com/aemkei/status/1378339247967584257?s=27
+
+Steps
+(x ^ y) < 77
+(x ^ y) < 214
+(x ^ y) < 120 https://twitter.com/aemkei/status/1378456523903483905?s=27
+
+Beams
+(x * 2) % y
+(x * 64) % y
+(x * 31) % y https://twitter.com/aemkei/status/1378458885099491329?s=27
+  
+1980's
+((x-128) * 64) % (y-128)
+
+Checker
+(x ^ y) & 32
+(x ^ y) & 72
+(x ^ y) & 23 https://twitter.com/aemkei/status/1378465827394048010?s=27
+
+Noise
+((x * y) ** 4) % 7
+((x * y) ** 5) % 99
+((x * y) ** 9) % 3 https://twitter.com/aemkei/status/1379190275793424385?s=27
+
+Rotate
+(x % y) % 4
+(y % x) % 20
+40 % (x % y) https://twitter.com/aemkei/status/1379191987304329223?s=27
+
+Minimal
+x & y
+x % y
+x & 9 https://twitter.com/aemkei/status/1379545476949798913?s=27
+
+Combine
+(x & y) & (x ^ y) % 19
+((x ^ y) & 32) * (x ^ y) % 9)
+(x * 64) % y * ((x ^ y) < 77) https://twitter.com/aemkei/status/1379896713561968642?s=27
+-->
+</body>
+</html>	

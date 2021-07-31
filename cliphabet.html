@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>clip-path Alphabet</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+body {
+  background: #bfbfbf;
+  margin-block-start: 4rem;
+  text-align: center;
+}
+div { 
+  aspect-ratio: 1/1;
+  display: inline-block;
+  height: 15rem;
+  margin-block-end: 0.5rem;
+  width: 15rem;
+}
+.a {
+  background: conic-gradient(rgb(215, 103, 176),rgb(215, 103, 176) 16%,rgb(26, 118, 89) 16%,rgb(26, 118, 89) 33%,rgb(122, 85, 64) 33%,rgb(122, 85, 64) 50%,rgb(49, 157, 215) 50%,rgb(49, 157, 215) 66%,rgb(246, 126, 51) 66%,rgb(246, 126, 51) 82%,rgb(246, 194, 51) 82%,rgb(246, 194, 51));
+  clip-path: polygon(40.00% 0.00%,60.00% 0.00%,100.00% 100.00%,80.00% 100.00%,50.00% 20.00%,37.00% 55.00%,63.00% 55.00%,71.00% 75.00%,31.00% 75.00%,20.00% 100.00%,0.00% 100.00%);
+}
+.d {
+  background: linear-gradient(90deg,rgb(28, 182, 224),rgb(0, 8, 81));
+  clip-path: polygon(0% 0%,65.00% 0.00%,90.00% 30.00%,90.00% 70.00%,65.00% 100.00%,20.00% 100.00%,20.00% 80.00%,55.00% 80.00%,70.00% 65.00%,70.00% 35.00%,55.00% 20.00%,20.00% 20.00%,20.00% 100.00%,0% 100%);
+}
+.m {
+  background: linear-gradient(45deg, #FE0000 16.66%, #FD8C00 16.66%, 33.32%, #FFE500 33.32%, 49.98%, #119F0B 49.98%, 66.64%, #0644B3 66.64%, 83.3%, #C22EDC 83.3%);
+  clip-path: polygon(20.00% 0.00%,40.00% 0.00%,52.00% 55.00%,70.00% 0.00%,90.00% 0.00%,100.00% 100.00%,80.00% 100.00%,75.00% 45.00%,60.00% 100.00%,40.00% 100.00%,30.00% 45.00%,20.00% 100.00%,0.00% 100.00%);
+}
+.s {
+  background-image: url(https://elements.stoumann.dk/assets/img/filter02.jpg);
+  clip-path: polygon(10% 0%,90.00% 0.00%,100.00% 20.00%,20.00% 20.00%,20.00% 40.00%,100.00% 40.00%,100.00% 85.00%,90.00% 100.00%,10.00% 100.00%,0.00% 80.00%,80.00% 80.00%,80.00% 60.00%,0.00% 60.00%,0% 15%);
+  margin-inline-start: -0.75rem;
+}
+  </style>
+</head>
+<body>
+
+<div class="m"></div>
+<div class="a"></div>
+<div class="d"></div>
+<div class="s"></div>
+
+</body>
+</html>

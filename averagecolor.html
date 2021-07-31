@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Image Average Color</title>
+	<style>
+		body {
+			/* background-color: #222;
+			color: #FEFEFE; */
+			display: flex;
+			flex-direction: column;
+			font-family: ui-sans-serif, system-ui, sans-serif;
+			gap: 1rem;
+			justify-content: space-between;
+			line-height: 1.5;
+			padding: 1rem 2rem;
+		}
+		canvas, img, #result {
+			align-self: flex-start;
+			height: 100px;
+			width: 100px;
+			/* border: 2px solid #FEFEFE;
+			max-width: 20rem;
+			object-fit: cover;
+			width: 100%; */
+		}
+		input {
+			display: none;
+		}
+		label {
+			border: 1px solid #222;
+			cursor: pointer;
+			display: inline-flex;
+			padding: 0.75rem 1.5rem;
+		}
+		@media (min-width: 768px) {
+			body { flex-direction: row; }
+		}
+	</style>
+</head>
+<body>
+
+<main>
+	<h1>Image Energy Calculator</h1>
+	<p>
+		Each pixel in an image consist of three “lamps”: red, green and blue.
+		If all “lamps” are fully on, the pixel is white – if they're off, it's black.<br />
+		This tool shows the intensity of each “lamp” in an image.<br />
+		High values equals high energy-cost (on OLED).<br />
+		Darker images and “dark mode” saves electricity.
+	</p>
+	<div>Red: <strong id="R"></strong></div>
+	<div>Green: <strong id="G"></strong></div>
+	<div>Blue: <strong id="B"></strong></div>
+	<h2>Average: <span id="A"></span></h2>
+	<label>
+		<input type="file" id="F" />
+		Choose a file
+	</label>
+</main>
+
+<img id="I" width="100" height="100" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAACFElEQVR4nO3TAQ2AQADEsAPjSAcD/BS0Epbs2p53wK9bFjgzCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg0AwCASDQDAIBINAMAgEg8DJtg9sfgMOlSm3aAAAAABJRU5ErkJggg==" />
+<canvas id="canvas"></canvas>
+<div id="result"></div>
+<!-- 
+	This is simplified. A pixel contains 10.000 photos, and, depending on the color wave-length of the color, it will have a different electronvolot:	
+	https://en.wikipedia.org/wiki/Visible_spectrum 
+-->
+<script>
+I.onload = () => {
+	const [r,g,b] = pixel2percent(I);
+	const avg = Math.ceil((r+g+b) / 3);
+	R.innerText = `${r}%`;
+	G.innerText =`${g}%`;
+	B.innerText = `${b}%`;
+	A.innerText = `${avg}%`
+	result.style.backgroundColor = `rgb(${r}%, ${g}%, ${b}%)`;
+}
+
+function loadImg() {
+	const reader = new FileReader();
+		reader.onload = (e) => {
+			I.setAttribute("src", e.target.result);
+		};
+		reader.readAsDataURL(event.target.files[0]);
+}
+
+function pixel2percent(img) {
+	const width = img.width;
+	const height = img.height;
+	// const canvas = document.createElement('canvas');
+	canvas.width = width;
+	canvas.height = height;
+	const ctx = canvas.getContext('2d');
+	// ctx.filter = 'blur(10px)';
+	ctx.drawImage(img, 0, 0, width, height);
+
+	
+	const imgData = ctx.getImageData(0, 0, width, height);
+	const len = imgData.data.length / 4;
+
+  let r = 0, g = 0, b = 0, a = 0;
+	for (let i = 0; i < imgData.data.length; i += 4) {
+		a = 255 / imgData.data[i + 3];
+		r+= imgData.data[i] / 255 / a;
+		g+= imgData.data[i + 1] / 255 / a;
+		b+= imgData.data[i + 2] / 255 / a;
+	}
+	r = Math.floor((r/len) * 100);
+	g = Math.floor((g/len) * 100);
+	b = Math.floor((b/len) * 100);
+
+	return [r, g, b];
+}
+
+F.addEventListener('change', loadImg);
+	</script>
+</body>
+</html>

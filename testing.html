@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Color</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+    .conic {
+      background: conic-gradient(
+        hsl(0, 100%, 50%), 
+        hsl(30, 100%, 50%), 
+        hsl(60, 100%, 50%), 
+        hsl(90, 100%, 50%), 
+        hsl(120, 100%, 50%), 
+        hsl(150, 100%, 50%), 
+        hsl(180, 100%, 50%), 
+        hsl(210, 100%, 50%), 
+        hsl(240, 100%, 50%), 
+        hsl(270, 100%, 50%), 
+        hsl(300, 100%, 50%), 
+        hsl(330, 100%, 50%),
+        hsl(360, 100%, 50%)
+      );
+      border-radius: 50%;
+      height: 25rem;
+      width: 25rem;
+    }
+
+    .linear {
+      background: linear-gradient(
+        to right,
+        hsl(0, 100%, 50%), 
+        hsl(30, 100%, 50%), 
+        hsl(60, 100%, 50%), 
+        hsl(90, 100%, 50%), 
+        hsl(120, 100%, 50%), 
+        hsl(150, 100%, 50%), 
+        hsl(180, 100%, 50%), 
+        hsl(210, 100%, 50%), 
+        hsl(240, 100%, 50%), 
+        hsl(270, 100%, 50%), 
+        hsl(300, 100%, 50%), 
+        hsl(330, 100%, 50%),
+        hsl(360, 100%, 50%)
+      );
+      height: 3rem;
+      margin: 1rem 0;
+      width: 100%;
+    }
+
+    .hue {
+      background-color: hsl(0, 100%, 50%);
+      height: 25rem;
+      position: relative;
+      width: 25rem;
+    }
+
+  .saturation {
+    background-image: linear-gradient(to bottom, transparent, hsl(0, 0%, 0%));
+    height: 100%;
+    position: absolute;
+    width: 100%;
+  }
+
+  .brightness {
+    background-image: linear-gradient(to right, hsl(0, 100%, 100%), transparent);
+    height: 100%;
+    position: absolute;
+    width: 100%;
+  }
+  
+    
+    </style>
+</head>
+<body>
+
+  <div class="conic"></div>
+  <div class="linear"></div>
+  <div class="hue">
+    <div class="brightness"></div>
+    <div class="saturation"></div>
+  </div>
+
+  <!-- document.forms['app'] -->
+  <!-- document.forms['app'].elements['user'] -->
+  <!-- document.forms['app'].elements['address'] -->
+
+
+  
+<form id="app">
+  <fieldset name="user">
+    <input name="firstname" value="Homer" />
+    <input name="lastname" value="Simpson" />
+  </fieldset>
+</form>
+
+<form name="info">
+  <fieldset name="address">
+    <input name="streetname" value="742 Evergreen Terrace" />
+    <input name="city" value="Springfield" form="app" />
+  </fieldset>
+<form>
+
+
+
+  <script>
+    
+console.log(form2obj('info'));
+// console.log(JSON.parse(fieldset2json('app', 'user')));
+
+console.log(fieldset2obj('address'))
+
+
+function fieldset2obj(fieldset) {
+  const form = [...document.forms].filter(form => !!form.elements[fieldset]);
+  return [...form[0].elements[fieldset].elements].reduce((acc, input) => { acc[input.name] = input.value; return acc }, {});
+}
+
+function form2obj(form) {
+  return Object.fromEntries(new FormData(document.forms[form]).entries());
+}
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>Binary Age</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+body {
+  background-color: LightCyan;
+  font-family: ui-monospace, monospace;
+  max-width: 400px;
+  margin: 2rem auto;
+  text-align: center;
+  width: 100%;
+}
+form {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+input { display: none; }
+input:checked + i {
+  background-color: LightSeaGreen;
+}
+i {
+  background: LightSalmon;
+  border-radius: 50%;
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+}
+label {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+span {
+  padding-top: 0.25rem;
+}
+  </style>
+</head>
+<body>
+<p>Which circles do you need to select, so the sum equals your age?</p>
+<form id="app">
+  <label>
+    <input type="checkbox" value="128">
+    <i></i>
+    <span>128</span>
+  </label>
+  <label>
+    <input type="checkbox" value="64">
+    <i></i>
+    <span>64</span>
+  </label>
+  <label>
+    <input type="checkbox" value="32">
+    <i></i>
+    <span>32</span>
+  </label>
+  <label>
+    <input type="checkbox" value="16">
+    <i></i>
+    <span>16</span>
+  </label>
+  <label>
+    <input type="checkbox" value="8">
+    <i></i>
+    <span>8</span>
+  </label>
+  <label>
+    <input type="checkbox" value="4">
+    <i></i>
+    <span>4</span>
+  </label>
+  <label>
+    <input type="checkbox" value="2">
+    <i></i>
+    <span>2</span>
+  </label>
+  <label>
+    <input type="checkbox" value="1">
+    <i></i>
+    <span>1</span>
+  </label>
+</form>
+
+<h1>Your age is: <span id="age">0</span></h1>
+<h2>That&rsquo;s <span id="binary">0</span> in binary!</h2>
+  
+<script>
+app.addEventListener('change', () => {
+  let total = 0;
+  [...app.elements].forEach(input => {
+    total+= input.checked ? input.value-0 : 0;
+    age.innerText = total;
+    binary.innerText = total.toString(2).padStart(8, '0');
+  })
+});
+</script>
+
+</body>
+</html>	

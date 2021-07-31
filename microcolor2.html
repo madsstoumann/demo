@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+  <title>MicroColor</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+	
+	.picker {
+		--bdrs: 2px;
+		--bgc: hsl(0, 0%, 33%);
+		--gap: 0.8rem;
+		--h: 0;
+		--s: 100%;
+		--b: 50%;
+		--sz: 250px; 
+		--bs: 2.5rem;
+		--t: 0.6rem;
+
+		background-color: var(--bgc);
+		border-radius: var(--bdrs);
+		display: flex;
+		padding: var(--gap);
+		inline-size: 24rem; /* FIX */
+	}
+	
+label {
+	display: block;
+	flex: 0 0 var(--bs);
+	margin: 0 calc(var(--gap) / 2);
+	position: relative;
+}
+	.hue {
+		block-size: var(--bs);
+		border-radius: var(--bdrs);
+		inline-size: var(--sz);
+		transform: rotate(-90deg);
+		transform-origin: 0 0;
+		position: absolute;
+		top: calc(100% - 2px);
+		-webkit-appearance: none;
+	}
+
+	.hue::-webkit-slider-runnable-track {
+		background: linear-gradient(to bottom, var(--bgc) var(--t), transparent var(--t), transparent calc(var(--s) - var(--t)), var(--bgc) calc(var(--s) - var(--t))), 
+		linear-gradient(to right,
+			hsl(0, 100%, 50%), 
+			hsl(30, 100%, 50%), 
+			hsl(60, 100%, 50%), 
+			hsl(90, 100%, 50%), 
+			hsl(120, 100%, 50%), 
+			hsl(150, 100%, 50%), 
+			hsl(180, 100%, 50%), 
+			hsl(210, 100%, 50%), 
+			hsl(240, 100%, 50%), 
+			hsl(270, 100%, 50%), 
+			hsl(300, 100%, 50%), 
+			hsl(330, 100%, 50%),
+			hsl(360, 100%, 50%)
+  );
+	background-size: 100%;
+	block-size: 100%;
+	box-sizing: border-box;	
+}
+
+input::-webkit-slider-thumb {
+	background: #FFF;
+	clip-path: polygon(0% 0%,50% var(--t),100% 0%,0% 0%,0% 100%,100% 100%,50% calc(var(--s) - var(--t)),0% 100%);
+	cursor: ns-resize;
+	height: 100%;
+	width: calc(var(--t) * 1.5);
+	-webkit-appearance: none;
+}
+
+	.color {
+  	background-color: hsl(var(--h), 100%, 50%);
+		block-size: var(--sz);
+		border-radius: var(--bdrs);
+		flex: 0 0 var(--sz);
+		position: relative;
+	}
+
+	.select {
+		--w: 2rem;
+		--x: 0;
+		--y: 0;
+		background-color: transparent;
+		border: 2px solid #EEE;
+		border-radius: 50%;
+		
+		block-size: var(--w);
+		inline-size: var(--w);
+		inset-block-start: calc(1% * var(--y));
+		inset-inline-start: calc(1% * var(--x));
+		position: absolute;
+		z-index: 1;
+
+	}
+	/* .resize::after {
+		--bdw: 2px;
+		block-size: var(--size);
+		border-radius: 50%;
+		box-shadow: 0 0 0 calc(var(--bdw) / 2) silver, 0 0 0 var(--bdw) black; 
+		content: "";
+		display: block;
+		inline-size: var(--size);
+		inset-block-end: var(--bdw);
+		inset-inline-end: var(--bdw);
+		position: absolute;
+	} */
+	::-webkit-resizer {	
+    border: var(--bdw) solid var(--bdc);
+		border-radius: 50%;
+    background: transparent;
+    display:block;  
+}
+	.saturation {
+  	background-image: linear-gradient(to bottom, transparent, hsl(var(--h), 0%, 0%));
+	}
+	.brightness {
+  	background-image: linear-gradient(to right, hsl(var(--h), 100%, 100%), transparent);
+	}
+	.saturation, .brightness {
+		border-radius: var(--bdrs);
+		block-size: 100%;
+		inline-size: 100%;
+		position: absolute;
+	}
+	.preview {
+		background-color: hsl(var(--h), var(--s), var(--b));
+		border-radius: var(--bdrs);
+		block-size: 5rem;
+		inline-size: 5rem;
+	}
+
+	</style>
+</head>
+<body>
+
+<div class="picker" id="app">
+	<div class="color">
+		<div class="brightness"></div>
+		<div class="saturation"></div>
+		<button type="button" class="select"></button>
+	</div>
+	<label>
+		<input type="range" class="hue" min="0" max="360" value="0" oninput="app.style.setProperty('--h', this.valueAsNumber)">
+	</label>
+	<div class="preview"></div>
+</div>
+
+  <script>
+
+const area = document.querySelector('.color');
+const preview = document.querySelector('.preview');
+const thumb = document.querySelector('.select');
+
+const ratio = (100 / area.offsetWidth);
+const maxXY = 100 - (thumb.offsetWidth * ratio)
+
+const test = 100 - maxXY;
+const rect = area.getBoundingClientRect();
+
+
+console.log(maxXY)
+	function move(event) {
+		const thumb = event.target;
+		// let [x,y] = [...xy()];
+
+		let x = parseInt(area.offsetWidth / (event.clientX - rect.left));
+		let y = (rect.top - event.clientY);
+		console.log(x)
+		setColor(x,y);
+		// document.body.style.setProperty('--x', parseInt((event.pageX / area.offsetWidth) * 100, 10)+'%');
+		// document.body.style.setProperty('--y', parseInt((event.pageY / area.offsetHeight) * 100, 10)+'%');
+	}
+
+	thumb.addEventListener('pointerdown', () => thumb.addEventListener('pointermove', move));
+	thumb.addEventListener('pointerup', () => thumb.removeEventListener('pointermove', move));
+	thumb.addEventListener('keydown', (event) => keyMove(event));
+	
+	let xy = () => [parseInt(getComputedStyle(thumb).getPropertyValue("--x")), parseInt(getComputedStyle(thumb).getPropertyValue("--y"))]
+	let hsvtohsl = (h,s,v,l=v-v*s/2, m=Math.min(l,1-l)) => [h,m?(v-l)/m:0,l];
+
+	function keyMove(event) {
+		const thumb = event.target;
+		let [x,y] = [...xy()];
+		if (event.key !== 'Tab') event.preventDefault();		
+
+		switch(event.key) {
+			case 'ArrowDown': y++; break;
+			case 'ArrowLeft': x--; break;
+			case 'ArrowRight': x++; break;
+			case 'ArrowUp': y--; break;
+			default: break;
+		}
+		setColor(x,y)
+	}
+
+	function setColor(x,y) {
+		if (y < 0) y = 0;
+		if (y > maxXY) y = maxXY;
+		if (x < 0) x = 0;
+		if (x > maxXY) x = maxXY;
+		thumb.style.setProperty('--x', x);
+		thumb.style.setProperty('--y', y);
+		const [h, s, l] = [...hsvtohsl(0, x/100, (100-y)/100)];
+		preview.style.backgroundColor = `hsl(${getComputedStyle(thumb).getPropertyValue("--h")}, ${s*100}%, ${l*100}%)`;
+	}
+  </script>
+</body>
+</html>	
